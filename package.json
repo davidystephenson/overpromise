@@ -43,10 +43,11 @@
   },
   "homepage": "https://github.com/davidystephenson/overpromise#readme",
   "ts-standard": {
-    "project": "./tsconfig.json",
+    "project": "./tsconfig.lint.json",
     "ignore": [
       "dist/**",
-      "behavior/**"
+      "behavior/**",
+      "*.config.ts"
     ]
   },
   "devDependencies": {
