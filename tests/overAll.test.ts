@@ -7,6 +7,22 @@ async function sleep (props: { ms: number }): Promise<void> {
 }
 
 describe('overAll', () => {
+  test('returns results in original input order', async () => {
+    const delays = [300, 100, 200, 50]
+
+    const result = await overAll(delays, async (delay: number) => {
+      await sleep({ ms: delay })
+      return `completed-${delay}`
+    })
+
+    expect(result).toEqual([
+      'completed-300',
+      'completed-100',
+      'completed-200',
+      'completed-50'
+    ])
+  })
+
   test('handles empty array', async () => {
     const result = await overAll([], async (id: number) => {
       return id
@@ -62,7 +78,7 @@ describe('overAll', () => {
     expect(result).toEqual(['a-0', 'b-1', 'c-2'])
   })
 
-  test('executes all callbacks concurrently', async () => {
+  test('starts all promises before any resolve', async () => {
     const executionOrder: string[] = []
     const delays = [100, 50, 150]
 
@@ -76,7 +92,7 @@ describe('overAll', () => {
     expect(executionOrder.slice(0, 3)).toEqual(['start-0', 'start-1', 'start-2'])
   })
 
-  test('completes in time of longest callback, not sum of callbacks', async () => {
+  test('waits for longest callback, not sum of callbacks', async () => {
     const delays = [100, 100, 100]
 
     const startTime = Date.now()
@@ -90,7 +106,7 @@ describe('overAll', () => {
     expect(totalTime).toBeGreaterThan(90)
   })
 
-  test('allows multiple callbacks to run simultaneously', async () => {
+  test('runs callbacks simultaneously', async () => {
     const activeCallbacks = new Set<number>()
     const maxConcurrent = { value: 0 }
 

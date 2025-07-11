@@ -65,7 +65,7 @@ describe('overEach', () => {
     expect(result).toEqual(['x-0', 'y-1', 'z-2'])
   })
 
-  test('executes callbacks one at a time in sequence', async () => {
+  test('resolves serially', async () => {
     const executionOrder: string[] = []
     const delays = [100, 50, 150]
 
@@ -83,7 +83,7 @@ describe('overEach', () => {
     ])
   })
 
-  test('completes in time equal to sum of all callbacks', async () => {
+  test('waits for sum of all times', async () => {
     const delays = [100, 100, 100]
 
     const startTime = Date.now()
@@ -97,7 +97,7 @@ describe('overEach', () => {
     expect(totalTime).toBeLessThan(350)
   })
 
-  test('prevents callback overlap by waiting for each to complete', async () => {
+  test('does not overlap callbacks', async () => {
     const activeCallbacks = new Set<number>()
     const maxConcurrent = { value: 0 }
 
