@@ -1,0 +1,15 @@
+---
+description: Validate data with Zod
+globs: **/*
+---
+- Whenever possible base needed TypeScript types on Zod schemas using `z.infer`
+- Do not infer unnecessary types, they are dead code
+- Always `.parse` data when it is delivered over a network or read from a file system because the type cannot be inferred.
+- Never `.parse` data if its type can be safely inferred.
+- Always validate with `.parse`, not `.safeParse`, catching errors only if appropriate
+- Do not create inferred types from ZodSchemas unless the type is currently needed somewhere
+- Keep schema names in camelCase
+- Denote schema variables by ending their name with `Schema`
+- Do not use `.strict` with Zod schemas
+- Do not manually annotate schemas with `ZodType` or anything else
+- Coerce date strings into date objects when appropriate using `z.coerce.date`

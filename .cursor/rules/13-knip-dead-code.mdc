@@ -1,0 +1,33 @@
+---
+description: Remove all dead code
+globs: **/*
+---
+- Always remove dead code including:
+  - Empty directories
+    - Delete the directory
+  - Unused files
+    - Delete the file.
+    - Delete the directory if it is empty now
+  - Unused exports
+    - Stop exporting the variable.
+    - If the variable is used in its own file
+    - If the variable is not used in its own file, delete it
+  - Unused dependencies:
+    - Remove the dependency.
+    - Delete or uninstall the dependency if is no longer used
+  - Unused types:
+    - Stop exporting the type if it is exported
+    - Delete the variable it is no longer used
+- Never keep dead code
+- Do not keep dead code if it is:
+  - A schema only used to infer a dead type (so you have to check)
+  - Used only for documentation
+  - Used only for future extensibility
+  - Used only in development/debugging
+- Use the `npm run deadcode` command to find dead code
+  - `npm run deadcode` runs the command `npx knip --reporter ./my-reporter.js`
+  - Trust results from `knip`
+  - Never ignore results from `npm run deadcode`
+  - If you see a result, you should remove it
+  - If you are confident removing a result is a bad idea, stop and ask for help
+  - Do not edit `my-reporter.js`, leave that to the human developer

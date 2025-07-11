@@ -1,0 +1,8 @@
+---
+description: Prefer throwing errors to handle logic failures
+globs: **/*
+---
+- Do not catch all errors
+- In many cases throwing an error is the right behavior
+- The original error message is generally the most useful
+- Catch errors at the lowest possible level

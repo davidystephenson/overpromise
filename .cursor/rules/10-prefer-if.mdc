@@ -1,0 +1,76 @@
+---
+description: Use if statements for conditional logicG
+globs: **/*
+---
+- Prefer `if` statements:
+
+```ts
+// BAD - Could use `if`/`else` without changing logic
+return single
+  ? importSingleItem({ flow: baseFlow, item: props.items[0] })
+  : importMultipleItems({ flow: baseFlow, items: props.items })
+
+// GOOD - Uses `if`
+if (single) {
+  return importSingleItem({ flow: baseFlow, item: props.items[0] })
+}
+return importMultipleItems({ flow: baseFlow, items: props.items })
+```
+
+- Use `if` to keep conditional logic efficient:
+
+```ts
+// BAD - Inefficient conditional logic
+function isOutputOperation (props: {
+  operation: Operation
+}): boolean {
+  return props.operation.output.length > 0 &&
+          props.operation.aInput.length === 0 &&
+          props.operation.bInput.length === 0
+}
+
+// GOOD - Efficient use of `if`
+function isOutputOperation (props: {
+  operation: Operation
+}): boolean {
+  const empty = props.operation.output.length <= 0
+  if (empty) {
+    return false
+  }
+  const aFull = props.operation.aInput.length !== 0
+  if (aFull) {
+    return false
+  }
+  const bFull = props.operation.bInput.length !== 0
+  if (bFull) {
+    return false 
+  }
+  return true
+}
+```
+
+- Never use `switch`/`case` blocks, use `if` instead to keep code flexible:
+
+```ts
+// BAD - `switch`/`case`
+switch (input.type) {
+  case 'boolean': {
+    return { type: 'boolean' }
+  }
+  case 'text': {
+    return { type: 'text'}
+  }
+  default: {
+    throw new Error('Invalid type')
+  }
+}
+
+// GOOD - `if`
+if (type === 'boolean') {
+  return { type: 'boolean' }
+}
+if (type === 'text') {
+  return { type: 'text' }
+}
+throw new Error('Invalid type')
+```

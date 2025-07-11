@@ -1,0 +1,68 @@
+{
+  "name": "overpromise",
+  "version": "0.0.1",
+  "description": "Iterate with promises",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "npx tsup",
+    "check": "npx tsc && npm run test && npm run deadcode && npm run lint",
+    "deadcode": "npx knip --reporter ./my-reporter.js",
+    "lint": "npx ts-standard --fix",
+    "test": "npx jest --json > jest-results.json && node parse-jest-failures.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidystephenson/overpromise.git"
+  },
+  "keywords": [
+    "promise",
+    "promises",
+    "async",
+    "iterate",
+    "logic",
+    "all",
+    "each",
+    "every"
+  ],
+  "author": "David Y. Stephenson",
+  "license": "Unlicense",
+  "bugs": {
+    "url": "https://github.com/davidystephenson/overpromise/issues"
+  },
+  "homepage": "https://github.com/davidystephenson/overpromise#readme",
+  "ts-standard": {
+    "project": "./tsconfig.json",
+    "ignore": [
+      "dist/**",
+      "behavior/**"
+    ]
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "jest": "^30.0.4",
+    "knip": "^5.61.3",
+    "ts-jest": "^29.4.0",
+    "ts-standard": "^12.0.2",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  },
+  "knip": {
+    "ignore": [
+      "dist/**",
+      "behavior/**",
+      "my-reporter.js"
+    ]
+  }
+}

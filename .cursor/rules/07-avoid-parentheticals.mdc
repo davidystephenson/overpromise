@@ -1,0 +1,45 @@
+---
+description: Avoid parenthetical statements
+globs: **/*
+---
+- Never nest logic in internal parenthetical statements:
+
+```ts
+// BAD - parenthetical logic
+const variants = {
+  ...oldVariants,
+  ...(props.variants ?? { default: 1 }),
+}
+
+// GOOD - No parenthetical logic
+const newVariants = props.variants ?? { default: 1 }
+const variants = {
+  ...oldVariants,
+  ...newVariants
+}
+```
+
+- Avoid wrapping logic in parentheses
+
+```ts
+// BAD - Wrapping parentheses
+const variantValue = (variantBase + variantRandomOffset).toString(16)
+
+// GOOD - No wrapping parentheses
+const variantNumber = variantBase + variantRandomOffset
+const variantValue = variantNumber.toString(16)
+```
+
+- Never return objects literals from arrow functions with parentheses, alwayse use an explicit return statement:
+
+```ts
+// BAD - Object returned in expression without function body
+const docs = ids.map(id => ({ id, date: new Date() }))
+
+// GOOD - Object returned in function with body and explicit return
+const docs = ids.map(id => {
+  return { id, date: new Date() }
+})
+```
+
+

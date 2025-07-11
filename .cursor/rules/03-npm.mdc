@@ -1,0 +1,7 @@
+---
+description: Manage packages with `npm`
+globs: **/*
+---
+- Always use the `npm` command to handle NPM package management.
+- Always add needed packages with `npm install`
+- Always remove unused packages with `npm uninstall`

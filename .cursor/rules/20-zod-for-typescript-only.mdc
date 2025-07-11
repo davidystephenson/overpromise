@@ -1,0 +1,35 @@
+---
+description: ONLY use Zod for values TypeScript supports
+globs: **/*
+---
+# Only define schemas for values that TypeScript can support
+
+- Only use Zod schemas for types that TypeScript recognizes.
+- NEVER use `.min`, `.max`, `.email`, `.transform`, `.refine`, `.default`.
+- The purpose of using Zod is to make TypeScript safe.
+- If you need to validate a non-TypeScript aspect of a value somewhere outside of Zod types files, don't modify any Zod schemas.
+- Instead:
+  - Use custom conditional logic 
+  - Use an if statment to check if the value is incorrect in that aspect
+  - If it is, throw an error
+  - Otherwise, continue with confidence that the aspect is safe.
+  - For example:
+
+    ```
+    // Incorrect
+    const passwordSchema = z.string().min(8)
+    function handleSubmit (password: string) {
+      const safe = passwordSchema.parse(password)
+      submit(safe)
+    }
+
+    // Correct
+    const passwordSchema = z.string()
+    function handleSubmit (password: string() {
+      const parsed = passworSchema.parse(password)
+      if (parsed.length < 8) {
+        throw new Error('The password must be at least 8 characters')
+      }
+      submit(safe)
+    }
+    ```

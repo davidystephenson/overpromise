@@ -1,0 +1,12 @@
+---
+description: Test code using Jest
+globs: **/*
+---
+# Use `npm run test` to test code
+
+- Ensure the code you write passes all tests
+- If you think everything is working, test with `npm run test`
+- `npm run test` runs the command `npx jest --json > jest-results.json && node parse-jest-failures.js`
+- If tests fail, fix the code to follow the tests.
+- Never edit the code in the `/tests` directory or add new tests, leave that to the human developer
+- If you think the tests are written incorrectly, stop and ask for help

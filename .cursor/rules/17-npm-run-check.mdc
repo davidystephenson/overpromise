@@ -1,0 +1,22 @@
+---
+description: `npm run check` to find issues and errors
+globs: **/*
+---
+# Run `npm run check` in the terminal to clean up behind yourself and find the next thing to work on
+
+- `npm run check` executes `tsc`, `jest`, `knip`, `ts-standard`: 
+
+```sh
+npx tsc && npm run test && npm run deadcode && npm run lint
+```
+
+- Always `npm run check` if you are uncertain if there are remaining issues
+- Always `npm run check` if you need to confirm you're done with a task
+- Always follow this process when you run `npm run check`:
+  1. Make sure you are in the project's root directory
+  2. Run `npm run check` to identify issues
+  5. Fix the issues, even if you need remove the code
+  6. `npm run check` again to ensure there are no new issues
+
+- Never tell me about output if you see output that I won't find interesting or important
+- Never ask for permission or confirmation to run the command

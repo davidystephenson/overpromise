@@ -1,0 +1,9 @@
+---
+description: Follow the project strategy files in `.notes` 
+globs: **/*
+---
+# Follow the notes
+
+- The files in numbered order in the top level `.notes` directory define the project strategy.
+- Read all of these files very carefully at the start of each interaction.
+- If you see an issue with the strategy, stop and ask for help.

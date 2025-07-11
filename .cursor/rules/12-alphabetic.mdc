@@ -1,0 +1,65 @@
+---
+description: Prefer alphabetic order in code definitions
+globs: **/*
+---
+- Always define object property names in alphabetic order.
+
+```ts
+// Good
+const tagSchema = z.object({
+  createdAt: z.string(),
+  id: z.string(),
+  name: z.string(),
+  updatedAt: z.string()
+})
+const user = {
+  age: 25,
+  id: "123",
+  name: "John"
+}
+```
+
+- Prefer defining lists of values in alphabetic order if it doesn't matter what order the values are in.
+
+```ts
+// Good
+export const statusSchema = z.enum([
+  'Complete',
+  'Failed',
+  'Pending',
+])
+const COLORS = [
+  'Blue',
+  'Green',
+  'Red'
+]
+```
+
+- Prefer calling methods or passing arguments to methods in alphabetic order if it doesn't matter what order they are called in.
+
+```ts
+// Good
+const colorList = colorController
+  .blue()
+  .green()
+  .red()
+const subtypesSchema = booleanSubtypeShcema
+  .or(numberSubtypeSchema)
+  .or(textSubtypeSchema)
+```
+
+- Prefer defining variables in alphabetic order, but not if it would make the block less intuitive or readable.
+
+```ts
+// Good
+const blue = '0000FF'
+const green = '00FF00'
+const red = 'FF0000'
+const message = `The codes are ${red}, ${green}, ${blue}`
+```
+
+- Always prefer alphabetizing, including:
+
+- Imports
+- React Props
+- Destructured property values

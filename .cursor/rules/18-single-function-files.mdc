@@ -1,0 +1,14 @@
+---
+description: Prefer single function files
+globs: **/*
+---
+- Prefer single function files
+- Always keep the function and filename the same.
+- Always export the function by default in the same line as the function declaration:
+
+```
+// add.ts
+export default function add (a: number, b: number) {
+  const sum = a + b
+  return sum
+}

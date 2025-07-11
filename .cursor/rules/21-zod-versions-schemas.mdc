@@ -1,0 +1,82 @@
+---
+description: Do not use zod unions to handle multi-version schemas, use .or, then .merge, instead
+globs: **/*
+---
+Do not use zod unions to handle multi-version schemas, use `.or()` and `.and()` instead
+
+- Never use `z.union()` or `z.discriminatedUnion()` - use `.or()` instead
+- Never use `z.extend()` - use `.and()` instead
+- Never spread schema shapes - define separate objects and combine with `.and()`
+- It is encouraged to use intermediate types to facilitate this pattern.
+- For discriminated types:
+
+    ```typescript
+    // ❌ Don't do this:
+    const baseSchema = z.object({ id: z.string() })
+    const versionsSchema = z.discriminatedUnion('type', [
+        z.object({ type: z.literal('a'), data: z.string() }),
+        z.object({ type: z.literal('b'), data: z.number() })
+    ])
+    export const schema = baseSchema.and(versionsSchema)
+    export type Schema = z.infer<typeof schema>
+    // { id: string } & ({ type: 'a', data: string } | { type: 'b', data: number })
+
+    // ✅ Do this instead:
+    const baseSchema = z.object({ id: z.string })
+    const aVersionSchema = z.object({ type: z.literal('a'), data: z.string() })
+    const bVersionSchema = z.object({ type: z.literal('b'), data: z.number() })
+    const versionsSchema = aVersionSchema.or(bVersionSchema)
+    export const schema = baseSchema.and(versionsSchema)
+    export type Schema = z.infer<typeof schema>
+    // { id: string } & ({ type: 'a', data: string } | { type: 'b', data: number })
+    ```
+
+    - If the schema has sublevels with versions, use this same pattern for the subtypes there.
+    - Avoid recursive schemas if they do not fit this pattern.
+    - This keeps the schemas flexible, compatible with other tools, and transparently simple.
+
+- If multiple schemas share bases and versions, consider reusing the subtypes:
+
+    ```typescript
+    // ❌ Don't duplicate version or base schema fields:
+    const baseSchema = z.object({ id: z.string() })
+    const aVersionSchema = z.object({ type: z.literal('a'), data: z.string() })
+    const bVersionSchema = z.object({ type: z.literal('b'), data: z.number() })
+    const versionsSchema = aVersionSchema.or(bVersionSchema)
+    export const schema = baseSchema.and(versionsSchema)
+    export type Schema = z.infer<typeof schema>
+    // { id: string } & ({ type: 'a', data: string } | { type: 'b', data: number })
+
+    const labelBaseSchema = z.object({ id: z.string(), label: z.string() })
+    const labelAVersionSchema = z.object({ type: z.literal('a'), data: z.string() })
+    const labelBVersionSchema = z.object({ type: z.literal('b'), data: z.number() })
+    const labelVersionsSchema = labelAVersionSchema.or(labelBVersionSchema)
+    export const labelSchema = labelBaseScema.and(labelVersionsSchema)
+    export type LabelSchema = z.infer<typeof labelSchema>
+    // { id: string, label: string } & ({ type: 'a', data: string } | { type: 'b', data: number })
+
+    export const labelDocBaseSchema = z.object({ label: z.string () })
+    export const labelDocSchema = labelDocBaseSchema.and(labelVersionsSchema)
+    export type LabelDoc = z.infer<typeof labelDocSchema>
+    // { label: string } & ({ type: 'a', data: string } | { type: 'b', data: number })
+
+    // ✅ Reuse shared schemas whenever possible:
+    const baseSchema = z.object({ id: z.string() })
+    const aVersionSchema = z.object({ type: z.literal('a'), data: z.string() })
+    const bVersionSchema = z.object({ type: z.literal('b'), data: z.number() })
+    const versionsSchema = aVersionSchema.or(bVersionSchema)
+    export const schema = baseSchema.and(versionsSchema)
+    export type Schema = z.infer<typeof schema>
+    // { id: string } & ({ type: 'a', data: string } | { type: 'b', data: number })
+
+    const labelSpecificSchema = z.object({ label: z.string() })
+    const labelBaseSchema = baseSchema.and(labelSpecificSchema)
+    export const labelSchema = labelBaseSchema.and(versionsSchema)
+    export type LabelSchema = z.infer<typeof labelSchema>
+    // { id: string, label: string } & ({ type: 'a', data: string } | { type: 'b', data: number })
+
+    export const labelDocSchema = labelSpecificSchema.and(versionsSchema)
+    // { label: string } & ({ type: 'a', data: string } | { type: 'b', data: number })
+    ```
+
+    - We always want to reuse schemas instead of recreating them when logically simpler.

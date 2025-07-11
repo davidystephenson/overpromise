@@ -1,0 +1,88 @@
+---
+description: Avoid `let` variables
+globs: **/*
+---
+- Avoid `let` variables, because immutable code is easier to reason about and less prone to bugs:
+
+```ts
+// BAD - Using let for accumulation
+let result = []
+for (const item of items) {
+  result.push(processItem(item))
+}
+
+// GOOD - Use functional methods
+const result = items.map(processItem)
+
+// BAD - Complex accumulation with let
+let total = 0
+let count = 0
+for (const score of scores) {
+  total += score
+  count++
+}
+let average = total / count
+
+// GOOD - Use reduce for complex accumulation
+interface Result {
+  total: number
+  count: number
+}
+const result = scores.reduce<Result>((acc, score) => ({
+  total: acc.total + score,
+  count: acc.count + 1
+}), { total: 0, count: 0 })
+const average = result.total / result.count
+
+// BAD - Using let for conditional assignment
+let message
+if (isError) {
+  message = 'Error occurred'
+} else if (isLoading) {
+  message = 'Loading...'
+} else {
+  message = 'Success!'
+}
+
+// GOOD - Define a function 
+const message = function getMessage () {
+  if (isError) {
+    return 'Error occurred'
+  }
+  if (isLoading) {
+    return 'Loading...'
+  } 
+  return 'Success'
+}
+
+// GOOD - Use ternary
+const message = isError ? 'Error occurred' 
+  : isLoading ? 'Loading...' 
+  : 'Success!'
+```
+
+- Abstract `try`/`catch` blocks that need to define values into their own function that return the value:
+
+```ts
+// BAD - Combine `let` with `try`/`catch`
+let userRecord
+try {
+  userRecord = await auth.createUser({
+    email: input.email,
+    password: input.password
+  })
+} catch (error) {
+  throw new HttpsError('internal', 'Error creating user account')
+}
+
+// GOOD - Combine `const` with `function` to wrap `try`/`catch`
+export default function createUser (email: string, password: string) {
+  try {
+    return await auth.createUser({ email, password })
+  } catch (error) {
+    throw new HttpsError('internal', 'Error creating user account')
+  }
+}
+
+const userRecord = await createUser(input.email, input.password)
+```

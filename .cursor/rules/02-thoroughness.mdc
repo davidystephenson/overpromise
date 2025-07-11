@@ -1,0 +1,15 @@
+---
+description: Implement features robustly and carefully
+globs: **/*
+---
+- Always implement all requested functionality
+- Never write code that is unneccessary to complete the task
+- Never leave todos, placeholders or missing pieces
+- Never ask for permission to run commands or apply changes
+- If you think there might not be a correct answer, say so
+- If you do not know the answer, stop and ask for help instead of guessing
+- Always verify information before presenting it
+- Do not make assumptions or speculate without clear evidence
+- Always consider and handle potential edge cases
+- Never ignore errors or warning
+- Always fix all issues when you become aware of them

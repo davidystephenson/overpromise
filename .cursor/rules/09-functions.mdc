@@ -1,0 +1,97 @@
+---
+description: Always define functions with a single parameter object argument
+globs: **/*
+---
+- Always use the function keyword when creating a named function
+- Always give functions an explicit return type
+- Never define a named function that takes multiple arguments to keep relationships explicit
+- If needed, always give functions a single parameter object named `props`:
+
+```ts
+// BAD - Multiple arguments
+function add (a: number, b: number): number {
+  return a + b
+}
+// GOOD - Single parameter object
+function add (props: {
+  a: number,
+  b: number
+}): number {
+  return props.a + props.b
+}
+```
+
+- Always define functions that take parameters with a single parameter object, even simple utility functions with one or two parameters.
+- Functions that do not take parameters should not receive arguments:
+
+```ts
+// BAD - Unnecessary parameter argument:
+function print (props: {}): void {
+  console.info('hello world')
+}
+
+// GOOD - Functions that do not take parameters should not receive arguments:
+function print (): void {
+  console.info('hello world')
+}
+```
+- Always define prop types inline, not with a named type:
+
+```ts
+// BAD - Named props type
+interface AddProps {
+  a: number,
+  b: number
+}
+function add (props: AddProps): number {
+  return props.a + props.b
+}
+
+// GOOD - Inline props type
+function add (props: {
+  a: number,
+  b: number
+}): number {
+  return props.a + props.b
+}
+```
+
+- Avoid destructuring `props`:
+
+```ts
+// BAD - Destructured props
+function add (props: {
+  a: number,
+  b: number
+}): number {
+  const { a, b } = props
+  return a + b
+}
+// GOOD - Avoid destructuring props
+function add (props: {
+  a: number,
+  b: number
+}): number {
+  return props.a + props.b
+}
+```
+
+- Always require prop types that are logically necessary:
+
+```ts
+// BAD - Optional necessary props
+export default function createFlow (props?: { seed: Uid }): Flow {
+  if (props?.seed == null) {
+    throw new Error('Seed is required')
+  }
+  return { seed: props.seed }
+}
+
+// GOOD - Require necessary props
+export default function createFlow (props: { seed: Uid }): Flow {
+  if (props.seed == null) {
+    throw new Error('Seed is required')
+  }
+  return { seed }
+}
+```

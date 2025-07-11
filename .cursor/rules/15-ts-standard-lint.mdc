@@ -1,0 +1,18 @@
+---
+description: Lint with `ts-standard`
+globs: **/*
+---
+# Always follow the ts-standard rules
+
+- Never use any other linters or formatting tools outside of `ts-standard`
+- Always ignore the warning from `ts-standard` about the TypeScript version, our TypeScript version should be safe for this command.
+- Use the `npm run lint` command to fix and find linting issues.
+  - `npm run lint` runs the command `npx ts-standard --fix`.
+  - To minimize tool calls, always fixing linting issues automatically with `npm run lint` if the issue is autofixable.
+- Avoid trailing spaces or improperly ending files with StandardJS syntax
+- It is especially important to automtically fix linting isues with `npm run lint` if you get a linting result with only these errors, because the file editor tooling struggles to save these fixes correctly:
+
+```
+Trailing spaces not allowed. (no-trailing-spaces)
+Newline required at the end of file but not found (eol-last)
+```

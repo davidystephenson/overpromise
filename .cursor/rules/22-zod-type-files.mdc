@@ -1,0 +1,62 @@
+---
+description: Keep Zod schemas and types in dedicated Types.ts files
+globs: **/*
+---
+- Always keep schemas and inferred types next to eachother in the same files dedicated to types.
+- Always denote them as type files by ending them with `Types.ts` or `Types.tsx`
+- Always give these files camelCase names like `authTypes.ts`
+- Outside of these `Types.ts` files, NEVER:
+  - Modify schemas using `.omit`, `.and`, `.or`, `.extend`, `.merge`, or any other tool.
+  - Infer new types from schemas with `z.infer` or any other tool.
+- Only use schemas outside of `Types.ts` files to validated values with `.parse`.
+- Never infer a schema type inline in the definition of another type or schema, define a named type below the schema instead:
+
+```ts
+// BAD - Schema type inferred inline
+const baseCategorySchema = z.object({ name: z.string() })
+
+type Category = z.infer<typeof baseCategorySchema> & {
+  subcategories: Category[];
+}
+
+// GOOD - Schema type declared separately with a name
+const baseCategorySchema = z.object({ name: z.string()})
+type BaseCategory = z.infer<typeof baseCategorySchema>
+
+type Category = BaseCategory & { subcategories: Category[] }
+```
+
+- If a type is inferred from a schema, always infer the type directly below the schema:
+
+```ts
+// BAD - Types separated from schemas
+const userSchema = z.object({ name: z.string() })
+const postSchema = z.sobject({ title: z.string() })
+
+type User = z.infer<typeof userSchema>
+type Post = z.infer<typeof postSchema>
+
+// GOOD - Types grouped with schemas
+
+const userSchema = z.object({ name: z.string() })
+type User = z.infer<typeof userSchema>
+
+const postSchema = z.sobject({ title: z.string() })
+type Post = z.infer<typeof postSchema>
+```
+
+- If a type is used to annotate a schema, always declare that type above the schema:
+
+```ts
+// BAD - Annotation type declared after it is used in an annotation
+const categorySchema: z.ZodType<Category> = baseCategorySchema.extend({
+  subcategories: z.lazy(() => categorySchema.array()),
+});
+type Category = BaseCategory & { subcategories: Category[] }
+
+// GOOD - Annotation type declared before it is used in an annotation
+type Category = BaseCategory & { subcategories: Category[] }
+const categorySchema: z.ZodType<Category> = baseCategorySchema.extend({
+  subcategories: z.lazy(() => categorySchema.array()),
+});
+```

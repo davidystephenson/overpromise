@@ -1,0 +1,166 @@
+---
+description: Avoid aliasing object properties and other static relationships if there is logical difference
+globs: **/*
+---
+- Avoid unnecessary aliases:
+
+```ts
+// BAD - Unnecessary alias
+const operationCount = props.flow.operationCount
+const operationSeed = `${seedString}-op-${operationCount}`
+
+// GOOD - No aliasing
+const operationSeed = `${seedString}-op-${props.flow.operationCount}`
+```
+
+- Avoid aliasing type conversions that are already protected by TypeScript:
+
+```ts
+// BAD - Unnecessary type conversion considering TypeScript
+export default function createRand (props: {
+  seed: string
+}): Operation {
+  const seedString = String(props.seed)
+  return new Rand(seedString)
+}
+
+// GOOD - Avoid unnecessary conversion alias
+export default function createRand (props: {
+  seed: string
+}): Operation {
+  return new Rand(props.seed)
+}
+```
+
+- Avoid creating alias variables for accessing object properties:
+
+```ts
+// Bad
+const token = request.auth
+if (token == null) {
+  throw new Error('Unauthenticated')
+}
+console.info('valid request:', token)
+
+// Good
+if (request.auth == null) {
+  throw new Error('Unauthenticated')
+}
+console.info('valid request', request.auth)
+```
+
+- Validate the relevant property to support type narrowing
+
+```ts
+// Bad
+if (request.query?.component == null) {
+  throw new Error('Missing query')
+}
+const component = request.query?.component // string | undefined
+decodeURIComponent(component) // Argument of type 'number' is not assignable to parameter of type 'string'.ts(2345)
+
+// Good
+if (request.query == null) {
+  throw new Error('Missing query')
+}
+decodeUriComponent(request.query.component) // string
+```
+
+- If necessary, revalidate data in multiple function scopes to avoid aliasing
+
+```ts
+// Bad
+if (request.query == null) {
+  throw new Error('Missing query')
+}
+const component = request.query.component
+decodeUriComponent(component)
+setTimeout (() => {
+  decodeUriComponent(component)
+}, 1000)
+
+// Good
+if (request.query == null) {
+  throw new Error('Missing query')
+}
+decodeUriComponent(request.query.component)
+setTimeout (() => {
+  if (request.query == null) {
+    throw new Error('Missing query')
+  }
+  decodeUriComponent(request.query.component)
+}, 1000)
+```
+
+- Always follow these rules in Firebase Cloud Functions:
+
+```ts
+// BAD - Meaningless alias
+if (request.auth?.uid === undefined) {
+  throw new HttpsError('unauthenticated', 'There is no uid')
+}
+const uid = request.auth.uid
+const db = getFirestore()
+const userRef = db.collection('users').doc(uid)
+await db.runTransaction(async (tx) => {
+  firezodCreate({
+    label: 'register user',
+    ref: userRef,
+    schema: userSchema,
+    data: {
+      id: userRecord.uid,
+    },
+    tx
+  })
+})
+
+// GOOD - Avoid meaningless alias
+if (request.auth === undefined) {
+  throw new HttpsError('unauthenticated', 'There is no auth')
+}
+const db = getFirestore()
+const userRef = db.collection('users').doc(request.auth.uid)
+await db.runTransaction(async (tx) => {
+  if (request.auth === undefined) {
+    throw new HttpsError('unauthenticated', 'There is no auth')
+  }
+  firezodCreate({
+    label: 'register user',
+    ref: userRef,
+    schema: userSchema,
+    data: { id: request.auth.uid },
+    tx
+  })
+})
+```
+
+- Give computed lookups their own constant
+
+```ts
+const firstIndex = i * 2
+const secondIndex = firstIndex + 1
+
+// BAD - Computed lookups without constants
+const lastItem = shuffledItems[shuffledItems.length - 1]
+return [props.items[firstIndex], props.items[secondIndex], lastItem]
+
+// GOOD - Computed lookups with constants
+const lastIndex = shuffledItems.length - 1
+const lastItem = shuffledItems[lastItem]
+const firstItem = props.items[firstIndex]
+const secondItem = props.items[secondIndex]
+return [firstItem, secondItem, lastItem]
+```
+
+- Write literal lookups inline:
+
+```ts
+
+// BAD - Literal lookups with constants
+const firstItem = props.items[0]
+const secondItem = props.items[1]
+return [firstItem, secondItem]
+
+// Good - Literal lookups without constants
+return [props.items[0], props.items[1]]
+```

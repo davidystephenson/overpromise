@@ -1,0 +1,143 @@
+---
+description: Write clean, readable, transparent code
+globs: **/*
+alwaysApply: false
+---
+- Always write functional and declarative programming patterns
+- Never use classes
+- Always write DRY (Don't Repeat Yourself) code
+- Prefer lines under 70 characters long, except for template literals.
+- Omit semicolons unless syntactically necessary.
+- Always use `async`/`await` for handling asynchronous logic.
+- Never use `.then` syntax for handing promises. 
+- Prefer `if` statements:
+
+```ts
+// BAD - Could use `if` without changing logic
+return single
+  ? importSingleItem({ flow: baseFlow, item: props.items[0] })
+  : importMultipleItems({ flow: baseFlow, items: props.items })
+
+// GOOD - Uses `if`
+if (single) {
+  return importSingleItem({ flow: baseFlow, item: props.items[0] })
+}
+return importMultipleItems({ flow: baseFlow, items: props.items })
+```
+
+- Never use string addition, use template literals instead:
+
+```ts
+const first = 'abc'
+cosnt last = 'xyz'
+
+// BAD - String addition
+const letters = first + last
+
+// GOOD - Template literal
+const letters = `${first}${last}`
+```
+
+- Never use `switch`/`case` blocks, use `if` instead to keep code flexible:
+
+```ts
+// BAD - `switch`/`case`
+switch (input.type) {
+  case 'boolean': {
+    return { type: 'boolean' }
+  }
+  case 'text': {
+    return { type: 'text'}
+  }
+  default: {
+    throw new Error('Invalid type')
+  }
+}
+
+// GOOD - `if`
+if (type === 'boolean') {
+  return { type: 'boolean' }
+}
+if (type === 'text') {
+  return { type: 'text' }
+}
+throw new Error('Invalid type')
+```
+
+- Prefer `== null` to detect nullish values:
+
+```ts
+// BAD - `=== undefined`
+export default function createFlow (props: { seed: Uid }): Flow {
+  if (props.seed === undefined) {
+    throw new Error('Seed is required')
+  }
+  return { seed }
+}
+
+// BAD - `=== null`
+export default function createFlow (props: { seed: Uid }): Flow {
+  if (props.seed === null) {
+    throw new Error('Seed is required')
+  }
+  return { seed }
+}
+
+// GOOD - `== null`
+export default function createFlow (props: { seed: Uid }): Flow {
+  if (props.seed == null) {
+    throw new Error('Seed is required')
+  }
+  return { seed }
+}
+```
+
+- Avoid destructing:
+
+```ts
+// BAD - Unnecessary destructuring
+const user = { id: 1, username: "zelda" }
+const { id, email } = user
+console.info(id)
+console.info(email)
+
+// GOOD - Avoid destructuring
+const user = { id: 1, username: "zelda" }
+console.info(user.id)
+console.info(user.email)
+```
+
+- Never return objects literals from arrow functions with parentheses, alwayse use an explicit return statement:
+
+```ts
+// BAD - Object returned in expression without function body
+const docs = ids.map(id => ({ id, date: new Date() }))
+
+// GOOD - Object returned in function with body and explicit return
+const docs = ids.map(id => {
+  return { id, date: new Date() }
+})
+```
+
+- Always export individual types or variables inline, do not create unnecessary export structures:
+
+```ts
+// BAD - unecessary export structures
+const baseSchema = z.object({ id: z.string() })
+const ownerSchema = z.object({ ownerId: z.string() })
+export {
+  baseSchema,
+  ownerSchema
+}
+
+// GOOD - Individual inline exports
+export const baseSchema = z.object({ id: z.string() })
+export const ownerSchema = z.object({ ownerId: z.string() })
+
+// BAD - Unnecessary re-export structure
+import { thing } from './thing'
+export { thing }
+
+// GOOD - Direct re-export
+export { thing } from './thing'
+```

@@ -1,0 +1,11 @@
+---
+description: Prefer camelCase file names
+globs: **/*
+---
+
+- Files that do not contain React Components should be in camelCase
+- It is encouraged for some file names to use camelCase and some file names to use PascalCase inside the same feature
+- It is safe for files with different casing to import from each other
+- It is encouraged for one directory to contain mostly files one case and only one or a few files of another case
+- Only React Component files and class files should use PascalCase
+- Files that do not contain React Components or classes should be in camelCase

@@ -1,0 +1,8 @@
+---
+description: Always follow the cursor rules
+globs: **/*
+---
+- The files in `.cursor/rules` define the project policies
+- Rules are numbered in their file name
+- Read these files in numbered order very carefuly at the start of each interaction.
+- Use the higher number file to determine precendence when resolving rule conflicts.

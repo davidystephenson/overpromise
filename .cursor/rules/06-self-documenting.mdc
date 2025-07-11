@@ -1,0 +1,44 @@
+---
+description: Never leave comments, let code document intself
+globs: **/*
+alwaysApply: false
+---
+- Write clear, expressive, self-documenting code
+- Never leave inline comments, JSDoc snippets, or unnecessary annotations.
+- Here is an example of a BAD inline comment:
+
+```ts
+// Add the numbers together
+const sum = 1 + 2
+```
+
+- Here is a GOOD example without the inline comment:
+
+```ts
+const sum = 1 + 2
+```
+
+- Prefer descriptive, explicit variable names over short, ambiguous ones to enhance code readability
+- Prefer defining hardcoded values with named constants in ALL_CAPS to improve code clarity and maintainability
+- Prefer breaking down multi-step logic into single step lines with their own constant variable.
+- Prefer early returns to avoid nested conditions and improve readability
+- Avoid abbreviations, but use short, simple, common words in names when possible.
+- Name functions as verbs, like `getDocument`, `add`, or `combineData`.
+- Name boolean variables as adjectives, like `heavy`, `imaged`.
+- Do NOT name boolean variables with to be verbs, like `isHeavy` or `hasImages`.
+- Prefix event handlers with "handle", like `handleClick` or `handleSubmit`.
+- Use both camcelCase or PascalCase for file names and mix them together in the same folder.
+- TypeScript type names get first priority when it comes to direct, intuitive names
+  - Never include modifiers like `Type` or `I` or `Interface` in type names when they are not meaningful
+  - If necessary other PascalCase names like classes or React components should get the "second choice" of a modified name
+  - When it makes sense to include the feature or entity name in a type name, feel free
+- Name functions as verbs or verbal phrases
+- Name boolean variables as adjectives:
+
+```ts
+// BAD - verbal boolean
+const isEmpty = count === 0
+
+// GOOD - adjectival boolean
+const empty = count === 0
+```
